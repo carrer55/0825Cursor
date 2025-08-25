@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase, sendNotification } from '../lib/supabase'
 import { useAuth } from './useAuth'
 
-export interface Notification {
+interface Notification {
   id: string
   user_id: string
   type: string

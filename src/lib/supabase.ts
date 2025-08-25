@@ -20,7 +20,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 })
 
 // Edge Functions のヘルパー関数
-export const callEdgeFunction = async (
+const callEdgeFunction = async (
   functionName: string, 
   payload: any, 
   options: { method?: string } = {}
@@ -104,7 +104,7 @@ export const generateDocument = async (
 }
 
 // OCR処理のヘルパー関数
-export const processReceiptOCR = async (
+const processReceiptOCR = async (
   imageData: string,
   applicationId: string,
   expenseItemId?: string
@@ -117,7 +117,7 @@ export const processReceiptOCR = async (
 }
 
 // データ分析のヘルパー関数
-export const getAnalytics = async (
+const getAnalytics = async (
   organizationId: string,
   dateRange?: { start: string, end: string },
   metrics?: string[],
@@ -142,7 +142,7 @@ export const getAnalytics = async (
 }
 
 // Database types - 最新スキーマに対応
-export type Database = {
+type Database = {
   public: {
     Tables: {
       user_profiles: {
@@ -716,7 +716,7 @@ export interface UserProfile {
   updated_at: string
 }
 
-export interface Organization {
+interface Organization {
   id: string
   name: string
   description: string | null
@@ -726,7 +726,7 @@ export interface Organization {
   updated_at: string
 }
 
-export interface Application {
+interface Application {
   id: string
   user_id: string
   organization_id: string | null
@@ -744,14 +744,14 @@ export interface Application {
   updated_at: string
 }
 
-export interface AuthUser {
+interface AuthUser {
   id: string
   email: string
   email_confirmed_at: string | null
   created_at: string
 }
 // 認証関連のヘルパー関数
-export const getCurrentUser = async () => {
+const getCurrentUser = async () => {
   const { data: { user } } = await supabase.auth.getUser();
   return user;
 };
@@ -774,7 +774,7 @@ export const getCurrentUserProfile = async () => {
   return profile;
 };
 
-export const updateUserProfile = async (updates: Partial<UserProfile>) => {
+const updateUserProfile = async (updates: Partial<UserProfile>) => {
   const user = await getCurrentUser();
   if (!user) throw new Error('User not authenticated');
 
@@ -789,7 +789,7 @@ export const updateUserProfile = async (updates: Partial<UserProfile>) => {
   return data;
 };
 
-export const signOut = async () => {
+const signOut = async () => {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
   

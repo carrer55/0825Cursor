@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase, approveApplication, syncToAccounting, generateDocument } from '../lib/supabase'
 import { useAuth } from './useAuth'
 
-export interface Application {
+interface Application {
   id: string
   user_id: string
   organization_id: string | null
