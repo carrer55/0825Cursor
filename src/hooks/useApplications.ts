@@ -68,7 +68,7 @@ export function useApplications() {
         .from('applications')
         .select(`
           *,
-          user_profiles!inner(full_name, department, position),
+          user_profiles!applications_user_id_fkey(full_name, department, position),
           organizations(name),
           expense_items(*),
           business_trip_details(*)

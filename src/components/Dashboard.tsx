@@ -137,20 +137,7 @@ function Dashboard() {
         return null;
       case 'application-status':
         return (
-          <div className="flex h-screen relative">
-            <div className="hidden lg:block">
-              <Sidebar isOpen={true} onClose={() => {}} onNavigate={navigateToView} currentView="application-status" />
-            </div>
-            <div className="flex-1 flex flex-col min-w-0">
-              <TopBar onMenuClick={toggleSidebar} onNavigate={navigateToView} />
-              <div className="flex-1 overflow-auto p-4 lg:p-6 relative z-10">
-                <ApplicationList 
-                  onCreateNew={handleCreateApplication}
-                  onViewDetail={(id) => setCurrentView('application-detail')}
-                />
-              </div>
-            </div>
-          </div>
+          <ApplicationStatusList onNavigate={navigateToView} onShowDetail={showApplicationDetail} />
         );
       case 'tax-simulation':
         return <TaxSimulation onNavigate={navigateToView} />;
