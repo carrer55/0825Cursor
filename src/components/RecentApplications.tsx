@@ -1,6 +1,5 @@
 import React from 'react';
 import { MoreHorizontal, Bell } from 'lucide-react';
-
 import { useApplications } from '../hooks/useApplications';
 
 interface RecentApplicationsProps {
@@ -37,6 +36,39 @@ function RecentApplications({ onShowDetail, onNavigate, onShowNotifications }: R
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-navy-600"></div>
           <span className="ml-3 text-slate-600">読み込み中...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (recentApps.length === 0) {
+    return (
+      <div className="backdrop-blur-xl bg-white/20 rounded-xl p-4 lg:p-6 border border-white/30 shadow-xl relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/10 to-white/20 backdrop-blur-xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 to-indigo-50/10"></div>
+        
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg lg:text-xl font-semibold text-slate-800 relative z-10">最近の申請</h2>
+          <div className="flex items-center space-x-2 relative z-10">
+            <button 
+              onClick={onShowNotifications}
+              className="p-2 text-slate-600 hover:text-slate-800 hover:bg-white/30 rounded-lg transition-colors"
+              title="通知センター"
+            >
+              <Bell className="w-5 h-5" />
+            </button>
+            <button 
+              onClick={() => onNavigate('application-status')}
+              className="text-slate-400 hover:text-slate-600"
+            >
+              <MoreHorizontal className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        <div className="text-center py-8 relative z-10">
+          <p className="text-slate-600">申請がまだありません</p>
+          <p className="text-slate-500 text-sm mt-2">新しい申請を作成してください</p>
         </div>
       </div>
     );

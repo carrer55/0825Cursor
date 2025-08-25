@@ -144,16 +144,23 @@ export function useApplications() {
               }
             ]
           }
-        ]
+        ];
         
         setApplications(sampleApplications)
+        setLoading(false)
         return
       }
 
       // 実際のデータベースクエリ
       const { data, error: fetchError } = await supabase
-        .from('applications')
-        .select('*')
+        .from('applications') 
+        .select(`
+          *,
+          user_profiles!inner(full_name, department, position),
+          organizations(name),
+          expense_items(*),
+          business_trip_details(*)
+        `)
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false })
 

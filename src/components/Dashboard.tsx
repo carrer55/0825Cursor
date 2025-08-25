@@ -167,8 +167,6 @@ function Dashboard() {
         return <Help onNavigate={navigateToView} />;
       case 'support':
         return <Support onNavigate={navigateToView} />;
-      case 'application-status':
-        return <ApplicationStatusList onNavigate={navigateToView} onShowDetail={showApplicationDetail} />;
       case 'admin-dashboard':
         return <AdminDashboard onNavigate={navigateToView} />;
       case 'accounting-integration':
