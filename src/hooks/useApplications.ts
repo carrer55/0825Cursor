@@ -64,15 +64,96 @@ export function useApplications() {
       setLoading(true)
       setError(null)
 
+      // デモモードの場合はサンプルデータを返す
+      if (localStorage.getItem('demoMode') === 'true') {
+        const sampleApplications: Application[] = [
+          {
+            id: 'BT-2024-001',
+            user_id: 'demo-user-id',
+            organization_id: 'demo-org-id',
+            type: 'business_trip',
+            title: '東京出張申請',
+            description: 'クライアント訪問および新規開拓営業',
+            data: {},
+            total_amount: 52500,
+            status: 'approved',
+            submitted_at: '2024-07-20T09:30:00Z',
+            approved_at: '2024-07-21T16:00:00Z',
+            approved_by: 'demo-approver-id',
+            rejection_reason: null,
+            created_at: '2024-07-20T09:00:00Z',
+            updated_at: '2024-07-21T16:00:00Z',
+            user_profiles: {
+              full_name: 'デモユーザー',
+              department: '営業部',
+              position: '代表取締役'
+            },
+            organizations: {
+              name: '株式会社デモ'
+            },
+            business_trip_details: [{
+              id: 'bt-detail-1',
+              start_date: '2024-07-25',
+              end_date: '2024-07-27',
+              purpose: 'クライアント訪問および新規開拓営業',
+              estimated_daily_allowance: 15000,
+              estimated_transportation: 22500,
+              estimated_accommodation: 15000
+            }]
+          },
+          {
+            id: 'EX-2024-001',
+            user_id: 'demo-user-id',
+            organization_id: 'demo-org-id',
+            type: 'expense',
+            title: '交通費・宿泊費精算',
+            description: '7月度の経費精算',
+            data: {},
+            total_amount: 12800,
+            status: 'pending',
+            submitted_at: '2024-07-18T11:30:00Z',
+            approved_at: null,
+            approved_by: null,
+            rejection_reason: null,
+            created_at: '2024-07-18T11:00:00Z',
+            updated_at: '2024-07-18T11:30:00Z',
+            user_profiles: {
+              full_name: 'デモユーザー',
+              department: '総務部',
+              position: '代表取締役'
+            },
+            organizations: {
+              name: '株式会社デモ'
+            },
+            expense_items: [
+              {
+                id: 'exp-item-1',
+                category_id: null,
+                date: '2024-07-15',
+                amount: 5800,
+                description: '新幹線代（往復）',
+                receipt_url: null
+              },
+              {
+                id: 'exp-item-2',
+                category_id: null,
+                date: '2024-07-15',
+                amount: 7000,
+                description: 'ホテル宿泊費',
+                receipt_url: null
+              }
+            ]
+          }
+        ]
+        
+        setApplications(sampleApplications)
+        return
+      }
+
+      // 実際のデータベースクエリ
       const { data, error: fetchError } = await supabase
         .from('applications')
-        .select(`
-          *,
-          user_profiles!applications_user_id_fkey(full_name, department, position),
-          organizations(name),
-          expense_items(*),
-          business_trip_details(*)
-        `)
+        .select('*')
         .eq('user_id', user?.id)
         .order('created_at', { ascending: false })
 
