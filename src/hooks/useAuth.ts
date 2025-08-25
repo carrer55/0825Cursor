@@ -185,7 +185,7 @@ export function useAuth() {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/#/email-confirmed`,
           data: profileData ? {
             full_name: profileData.full_name,
             company_name: profileData.company_name,
@@ -200,27 +200,10 @@ export function useAuth() {
         return { success: false, error: error.message };
       }
 
-      // プロフィールデータがある場合は、ユーザー作成後にプロフィールを更新
-      if (data.user && profileData) {
-        try {
-          const { error: profileError } = await supabase
-            .from('user_profiles')
-            .upsert({
-              id: data.user.id,
-              email: data.user.email || '',
-              full_name: profileData.full_name,
-              company_name: profileData.company_name,
-              position: profileData.position,
-              phone: profileData.phone,
-              onboarding_completed: true
-            });
-
-          if (profileError) {
-            console.error('Profile creation error:', profileError);
-          }
-        } catch (profileError) {
-          console.error('Profile creation failed:', profileError);
-        }
+      // メール確認が必要な場合は、プロフィール作成を後回しにする
+      if (data.user && !data.user.email_confirmed_at && profileData) {
+        // 一時的にプロフィールデータを保存
+        localStorage.setItem('pendingProfileData', JSON.stringify(profileData));
       }
 
       setAuthState(prev => ({ ...prev, loading: false }));
@@ -283,10 +266,14 @@ export function useAuth() {
         throw new Error('User not authenticated');
       }
 
+      // プロフィールが存在しない場合は作成、存在する場合は更新
       const { data, error } = await supabase
         .from('user_profiles')
-        .update(updates)
-        .eq('id', authState.user.id)
+        .upsert({
+          id: authState.user.id,
+          email: authState.user.email || '',
+          ...updates
+        })
         .select()
         .single();
 

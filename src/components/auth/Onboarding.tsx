@@ -9,12 +9,30 @@ interface OnboardingProps {
 
 function Onboarding({ onNavigate, onComplete }: OnboardingProps) {
   const { user, updateProfile, loading } = useAuth();
-  const [formData, setFormData] = useState({
-    fullName: '',
-    companyName: '',
-    position: '',
-    phone: '',
-    agreeToTerms: false
+  const [formData, setFormData] = useState(() => {
+    // 保存されたプロフィールデータがあれば使用
+    const pendingData = localStorage.getItem('pendingProfileData');
+    if (pendingData) {
+      try {
+        const data = JSON.parse(pendingData);
+        return {
+          fullName: data.full_name || '',
+          companyName: data.company_name || '',
+          position: data.position || '',
+          phone: data.phone || '',
+          agreeToTerms: false
+        };
+      } catch (error) {
+        console.error('Pending profile data parse error:', error);
+      }
+    }
+    return {
+      fullName: '',
+      companyName: '',
+      position: '',
+      phone: '',
+      agreeToTerms: false
+    };
   });
   const [error, setError] = useState('');
 
@@ -44,6 +62,8 @@ function Onboarding({ onNavigate, onComplete }: OnboardingProps) {
     });
 
     if (result.success) {
+      // 保存されたプロフィールデータを削除
+      localStorage.removeItem('pendingProfileData');
       onComplete();
     } else {
       setError(result.error || '登録に失敗しました。もう一度お試しください。');

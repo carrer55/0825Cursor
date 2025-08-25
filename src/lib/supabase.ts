@@ -767,6 +767,30 @@ export const getCurrentUserProfile = async () => {
     .single();
 
   if (error) {
+    // プロフィールが存在しない場合は作成
+    if (error.code === 'PGRST116') {
+      const { data: newProfile, error: createError } = await supabase
+        .from('user_profiles')
+        .insert({
+          id: user.id,
+          email: user.email || '',
+          full_name: null,
+          company_name: null,
+          position: 'user',
+          phone: null,
+          department: '',
+          role: 'user',
+          onboarding_completed: false
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        console.error('Profile creation error:', createError);
+        return null;
+      }
+      return newProfile;
+    }
     console.error('Profile fetch error:', error);
     return null;
   }

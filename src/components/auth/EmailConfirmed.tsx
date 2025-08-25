@@ -1,19 +1,40 @@
 import React, { useEffect } from 'react';
 import { CheckCircle, ArrowRight, User } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 interface EmailConfirmedProps {
   onNavigate: (view: string) => void;
 }
 
 function EmailConfirmed({ onNavigate }: EmailConfirmedProps) {
+  const { user } = useAuth();
+
   useEffect(() => {
+    // メール確認後にプロフィール作成処理
+    const handleEmailConfirmation = async () => {
+      if (user?.email_confirmed_at) {
+        const pendingProfileData = localStorage.getItem('pendingProfileData');
+        if (pendingProfileData) {
+          try {
+            const profileData = JSON.parse(pendingProfileData);
+            // プロフィール作成処理は onboarding で行う
+            localStorage.removeItem('pendingProfileData');
+          } catch (error) {
+            console.error('Profile data parse error:', error);
+          }
+        }
+      }
+    };
+
+    handleEmailConfirmation();
+
     // 5秒後に自動で本登録画面に遷移
     const timer = setTimeout(() => {
       onNavigate('onboarding');
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, [onNavigate]);
+  }, [onNavigate, user]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 relative overflow-hidden">

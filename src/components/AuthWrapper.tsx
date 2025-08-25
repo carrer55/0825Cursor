@@ -27,10 +27,16 @@ function AuthWrapper() {
     
     const code = urlParams.get('code');
     const error = urlParams.get('error') || hashParams.get('error');
+    const emailConfirmed = window.location.hash.includes('email-confirmed');
     
     if (error) {
       console.error('Auth error:', error);
       setCurrentView('login');
+      return;
+    }
+
+    if (emailConfirmed) {
+      setCurrentView('email-confirmed');
       return;
     }
 
